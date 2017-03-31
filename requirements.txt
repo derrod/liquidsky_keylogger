@@ -1,0 +1,2 @@
+scapy==2.3.3
+protobuf==3.2.0
