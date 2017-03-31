@@ -1,0 +1,255 @@
+package InputClient;
+
+import "ApplicationInfo.proto";
+
+
+enum VariableNamePredifined {
+ CUSTOM_STRING_VARIABLE = 0;
+}
+
+enum VariableUpdateEventType {
+ UNKNOWN_EVENT = 0;
+ UPDATE_REQUEST = 1;
+ UPDATE_REQUEST_FORCE = 2;
+ UPDATE_ACCEPTED = 3;
+ UPDATE_REJECT = 4;
+ VARIABLE = 5;
+}
+
+enum CmdCommand {
+ LAUNCH_STEAM_BIG_PICTURE_MODE = 0;
+ LAUNCH_TASKMGR = 1;
+ LAUNCH_CMD = 2;
+ LAUNCH_STEAM = 3;
+ KILL_EXPLORER = 6;
+ KILL_STEAM = 7;
+ LAUNCH_KEYBOARD_CPL = 8;
+ LAUNCH_REGEDIT = 9;
+}
+message Resolution {
+ optional int32 x = 1;
+ optional int32 y = 2;
+}
+
+message VariableName {
+ optional VariableNamePredifined predefinedName = 1;
+ optional string stringName = 2;
+}
+
+message VariableValue {
+ optional int32 int32Value = 1;
+ optional uint64 uint64Value = 2;
+ optional bool boolValue = 3;
+ optional string stringValue = 4;
+ optional Resolution resolutionValue = 5;
+}
+
+message VariableEvent {
+ optional VariableName name = 1;
+ optional bytes value = 2;
+ optional VariableUpdateEventType event = 3;
+ optional int32 oldCookie = 4;
+ optional int32 newCookie = 5;
+ optional int32 owner = 6;
+ optional bool useLocalValue = 7;
+ optional bool ignoreCookies = 8;
+}
+
+message InitiateStream {
+ optional string streamName = 1;
+ optional string streamLink = 2;
+}
+
+message BitRate {
+ optional int32 avgBitRate = 1;
+ optional int32 peakBitRate = 2;
+}
+
+message JoystickStateV2 {
+ optional uint32 joyId = 1;
+ optional uint64 buttons = 2;
+ optional uint64 axises1 = 3;
+ optional uint64 axises2 = 4;
+}
+
+message JoystickFeedbackV2 {
+ optional uint32 joyId = 1;
+ optional uint32 motors = 2;
+}
+
+message Cursor {
+ optional uint32 xHotspot = 1;
+ optional uint32 yHotspot = 2;
+ optional uint32 width = 3;
+ optional uint32 height = 4;
+ optional uint32 pitch = 5;
+ optional bytes data = 6;
+ optional uint32 flags = 7;
+}
+
+message Request {
+ message KeyActionV2 {
+  optional uint32 vkey = 1;
+  optional uint32 scancode = 2;
+  optional uint32 flags = 3;
+ }
+
+ message MouseAction {
+  optional int32 absx = 1;
+  optional int32 absy = 2;
+  optional int32 relx = 3;
+  optional int32 rely = 4;
+  optional int32 screenx = 5;
+  optional int32 screeny = 6;
+  optional int64 flags = 7;
+  optional int64 data = 8;
+ }
+
+ message InvalidateRefrenceFrames {
+  repeated int64 invalidFrameTimeStamp = 1;
+  optional int32 numRefFramesToInvalidate = 2;
+ }
+
+ message StartIntraRefresh {
+  optional int32 intraRefreshCnt = 2;
+ }
+
+ message Authorization {
+  optional string token = 1;
+  optional string lang = 2;
+ }
+
+ message PereodicMessage {
+  optional int32 framesReceived = 1;
+  optional int32 framesLost = 2;
+  optional int32 framesDecoded = 3;
+  optional int32 framesRendered = 4;
+ }
+
+ message LostPacketsInfo {
+  optional int32 packetSeq = 1;
+  optional int32 packetLossCount = 2;
+  optional int32 timestamp = 3;
+ }
+
+ message ChangeLanguage {
+  optional string locale = 1;
+  optional string keyboards = 2;
+ }
+
+
+ enum RequestType {
+  EMPTY = 0;
+  NONE = 1;
+  NOT_USED1 = 2;
+  KEYBOARD_ACTION_V2 = 28;
+  KEYBOARD_RESET = 23;
+  MOUSE_ACTION = 3;
+  JOYSTICK_RESET = 22;
+  JOYSTICK_STATE_V2 = 27;
+  STREAM_INITIATE = 4;
+  STREAM_STOP = 5;
+  SYSTEM_SHOW_DESKTOP = 25;
+  SYSTEM_CMD_COMMAND = 26;
+  SYSTEM_SOFTWARE_RESET = 31;
+  VIDEO_INVALIDATE_REFERENCE_FRAMES = 11;
+  VIDEO_FORCE_IDR_FRAME = 12;
+  VIDEO_START_INTRA_REFRESH = 13;
+  VIDEO_UPDATE_ADAPTIVE_QUANTIZATION = 14;
+  VIDEO_NOTIFY_LOST_PACKET_INFO = 20;
+  AUTHORIZATION = 15;
+  PEREODIC_MESSAGE = 16;
+  CLIENT_DB_VARIABLE_EVENT = 39;
+  CLIENT_DB_CONNECTED_EVENT = 40;
+  CLIENT_DB_READY_EVENT = 41;
+  DEBUG_CRASH_STREAMER = 17;
+  NETWORK_PING = 35;
+  SYSTEM_CHANGE_LANGUAGE = 42;
+  ICON_REQUEST = 43;
+  RECENT_APPLICATIONS_REQUEST = 44;
+  INSTALL_APPLICATIONS_REQUEST = 45;
+  PROCESSES_REQUEST = 46;
+  PROCESS_EVENT_REQUEST = 47;
+  NETWORK_CONNECTION_STOPPED = 51;
+  USB_REQUEST_SLOT = 60;
+  USB_UPDATE_SLOTS = 61;
+ }
+ optional RequestType type = 1;
+ optional KeyActionV2 keyActionV2 = 49;
+ optional MouseAction mouseAction = 22;
+ optional JoystickStateV2 joystickStateV2 = 48;
+ optional InitiateStream initiateStream = 31;
+ optional InvalidateRefrenceFrames invalidateRefrenceFramesCommand = 36;
+ optional StartIntraRefresh startIntraRefreshCommand = 38;
+ optional Authorization authorization = 40;
+ optional bool autoReduceBitrate = 42;
+ optional bool autoIncreaseBitrate = 43;
+ optional LostPacketsInfo lostPacketInfo = 44;
+ optional CmdCommand cmdCommand = 47;
+ optional int32 pingNumber = 53;
+ optional int32 clientDBId = 57;
+ optional VariableEvent variableEvent = 58;
+ optional ChangeLanguage changeLanguage = 59;
+ optional uint64 timestamp = 70;
+ optional ApplicationInfo.RequestIcon requestIcon = 80;
+ optional ApplicationInfo.ProcessEvent requestEventProcess = 81;
+ optional string usbport = 100;
+ optional string usbpassword = 101;
+}
+
+message Response {
+ message StreamConfig {
+  optional string urlPortAndPostfix = 1;
+  optional string tmpusername = 2;
+  optional string tmppassword = 3;
+ }
+
+
+ enum ResponseType {
+  TEXT = 0;
+  STREAM_CREATED = 2;
+  STREAM_STOPPED = 3;
+  AUTHORIZATION_SUCCESS_ADMIN = 10;
+  AUTHORIZATION_SUCCESS_VIEW = 11;
+  AUTHORIZATION_FAILED = 12;
+  REQUEST_FAILED_NO_RIGHTS = 13;
+  ANOTHER_CLIENT_LOGGED_IN = 14;
+  JOYSTICK_FEEDBACK = 18;
+  SHOW_KEYBOARD = 19;
+  NETWORK_PONG = 23;
+  SERVER_DB_VARIABLE_EVENT = 26;
+  SERVER_DB_CONNECTED_EVENT = 27;
+  SERVER_DB_READY_EVENT = 28;
+  STREAMER_SHUTDOWN = 29;
+  SYSTEM_CHANGE_LANGUAGE_SUCCESS = 30;
+  SYSTEM_CHANGE_LANGUAGE_FAILURE = 31;
+  FAVORITE_APPLICATION_INFO = 40;
+  APPLICATION_ICON = 41;
+  RECENT_APPLICATION_INFO = 42;
+  INSTALL_APPLICATION_INFO = 43;
+  PROCESS_EVENT = 44;
+  PROCESS_STARTED = 45;
+  CURSOR_HASH = 50;
+  CURSOR_ICON = 51;
+  USB_ADD_SLOT = 70;
+ }
+ optional ResponseType type = 1;
+ optional string text = 11;
+ optional StreamConfig streamConfig = 31;
+ optional JoystickFeedbackV2 joysticksFeedback = 39;
+ optional int32 pongNumber = 43;
+ optional int32 serverDBId = 46;
+ optional VariableEvent variableEvent = 47;
+ optional string shutdownReason = 48;
+ optional ApplicationInfo.FavoriteApplicationInfo favoriteApplicationInfo = 49;
+ optional ApplicationInfo.ApplicationIcon applicationIcon = 50;
+ optional ApplicationInfo.RecentApplicationInfo recentApplicationInfo = 51;
+ optional ApplicationInfo.InstallApplicationInfo installApplicationInfo = 52;
+ optional ApplicationInfo.ProcessEvent processEvent = 53;
+ optional bool processStarted = 54;
+ optional uint32 cursorHash = 60;
+ optional Cursor cursor = 61;
+ optional string usbPort = 80;
+ optional uint32 netPort = 81;
+}
+

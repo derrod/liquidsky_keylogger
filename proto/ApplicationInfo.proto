@@ -1,0 +1,74 @@
+package ApplicationInfo;
+
+message ApplicationInfo {
+ optional string name = 1;
+ optional string path = 2;
+ optional string exepath = 3;
+ optional string exeparameters = 4;
+ optional bytes exemd5 = 5;
+ optional string workingdirectory = 6;
+ optional string iconpath = 7;
+ optional int32 iconindex = 8;
+ optional bytes iconmd5 = 9;
+ optional uint64 date = 10;
+ optional uint64 size = 11;
+}
+
+message ApplicationArray {
+ repeated ApplicationInfo appInfo = 1;
+}
+
+message FavoriteApplicationInfo {
+ optional string name = 1;
+ optional string exepath = 2;
+ optional string exeparameters = 3;
+ optional bytes exemd5 = 4;
+ optional string workingdirectory = 5;
+ optional bytes iconmd5 = 6;
+}
+
+message RecentApplicationInfo {
+ optional string exepath = 1;
+ optional bytes exemd5 = 2;
+ optional uint32 numExec = 3;
+ optional uint32 focusTime = 4;
+ optional uint64 lastExecTime = 5;
+}
+
+message InstallApplicationInfo {
+ optional string name = 1;
+ optional string location = 2;
+ optional string date = 3;
+}
+
+message RequestIcon {
+ optional bytes iconmd5 = 1;
+}
+
+message ApplicationIcon {
+ optional bytes iconmd5 = 1;
+ optional bytes iconData = 2;
+}
+
+message ProcessEvent {
+
+ enum EventType {
+  START = 0;
+  STOP = 1;
+  ACTIVE = 2;
+  SHOW = 3;
+  HIDE = 4;
+  HIDE_ALL = 5;
+ }
+ optional EventType eventType = 1;
+ optional uint32 processid = 2;
+ optional uint32 parentid = 3;
+ optional string name = 4;
+ optional string exepath = 5;
+ optional string exeparameters = 6;
+ optional bytes exemd5 = 7;
+ optional string workingdirectory = 8;
+ optional bytes iconmd5 = 9;
+ optional uint64 timestamp = 10;
+}
+
