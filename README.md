@@ -2,8 +2,9 @@
 
 Little proof of concept keylogger for LiquidSky.
 
-LiquidSky is using Protobuf for all communication between the server and client (Video is streamed over RTP).
-This tool decodes the protobuf packets and prints them in a human-readable form.
+LiquidSky is using Protobuf for all communication between the server and client (Video is streamed over RTP). This communication is entirely unencrypted and contains data such as keystrokes, mouse movement and clipboard.
+
+This tool decodes the protobuf messages and prints them in a human-readable form.
 It also has a keylogger mode that will print keypresses as readable text in near real-time.
 
 It currently can sniff on local network interfaces or use a pcap file as input.
@@ -27,4 +28,6 @@ The default mode will print packets in a format similar to this:
 The unfiltered switch will also cause ping/pongs and mouse movement to be printed, it can be *very* spammy.
 
 ## Some more stuff
-In [/proto](proto/) you will find the .proto files extracted from the client. The protobuf messages are sent over TCP with what seems to be a proprietary protocol. Some notes on how those packets are built (not necessarily correct) can be found in the [liquidsky_keylogger.py](liquidsky_keylogger.py) file.
+In [proto/](proto/) you will find the .proto files extracted from the client. The protobuf messages are sent over TCP with what seems to be a proprietary protocol. Some notes on how those packets are built (not necessarily correct) can be found in the [liquidsky_keylogger.py](liquidsky_keylogger.py) file.
+
+In order to extract the .proto files I used [Protod](https://github.com/sysdream/Protod). In order to get the complete files and not just part of it I had to adjust the delta in line 274 from `1024` to `4096`.
