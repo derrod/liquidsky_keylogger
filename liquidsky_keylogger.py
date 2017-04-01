@@ -27,7 +27,9 @@ filtered = True
 
 def to_json(proto_msg):
     # MessageToJson contains line breaks, but we want everything to be one line, hence this uglyness
-    return json.dumps(json_format.MessageToDict(proto_msg)).strip()
+    if type(proto_msg) == dict:
+        return json.dumps(proto_msg, sort_keys=True)
+    return json.dumps(json_format.MessageToDict(proto_msg), sort_keys=True)
 
 
 def write_keystroke(req):
@@ -50,7 +52,14 @@ def write_keystroke(req):
 
 def parse_request(req):
     if not filtered or req.type not in [req.NETWORK_PING, req.MOUSE_ACTION]:
-        msg = 'JSON: %s' % to_json(req)
+        # Little workaround for VariableEvent which has an encoded "value" field
+        if req.variableEvent.value:
+            val.ParseFromString(req.variableEvent.value)
+            msg_d = json_format.MessageToDict(req)
+            msg_d['variableEvent']['value'] = json_format.MessageToDict(val)
+            msg = 'JSON: %s' % to_json(msg_d)
+        else:
+            msg = 'JSON: %s' % to_json(req)
     else:
         return
     print '[CLIENT->SERVER]', req.RequestType.Name(req.type).ljust(30), '|', msg
@@ -58,7 +67,13 @@ def parse_request(req):
 
 def parse_response(res):
     if not filtered or res.type not in [res.CURSOR_HASH, res.NETWORK_PONG]:  # ignore spammy messages
-        msg = "JSON: %s" % to_json(res)
+        if res.variableEvent.value:
+            val.ParseFromString(res.variableEvent.value)
+            msg_d = json_format.MessageToDict(res)
+            msg_d['variableEvent']['value'] = json_format.MessageToDict(val)
+            msg = 'JSON: %s' % to_json(msg_d)
+        else:
+            msg = "JSON: %s" % to_json(res)
     else:
         return
     print '[SERVER->CLIENT]', res.ResponseType.Name(res.type).ljust(30), '|', msg
