@@ -1,11 +1,12 @@
 # Python
 
-import InputClient_pb2
 import json
+import sys
 from google.protobuf.message import DecodeError
 from google.protobuf import json_format
-from key_codes import key_codes
-from scapy.all import *  # this import could seriously be optimized
+from proto_py import InputClient_pb2
+from scapy.all import IP, TCP, sniff
+from utils.key_codes import key_codes
 
 req = InputClient_pb2.Request()
 res = InputClient_pb2.Response()
