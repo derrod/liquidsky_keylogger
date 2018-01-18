@@ -13,8 +13,8 @@ res = InputClient_pb2.Response()
 val = InputClient_pb2.VariableValue()
 
 print_keystrokes = False
-print_log = True
 filtered = True
+ports = [80, 6666]
 
 # Some notes on the packets structure itself (incomplete packet):
 # 00000000  00 00 00 21 01 22 00 00  08 0f c2 02 1c 0a 16 42   ...!.".. .......B
@@ -84,21 +84,21 @@ def pkt_callback(pkt):
     # Just some filters to ignore packets that aren't what we're looking for
     if TCP not in pkt:
         return
-    if not (pkt[TCP].dport == 80 or pkt[TCP].sport == 80):
+    if not (pkt[TCP].dport in ports or pkt[TCP].sport in ports):
         return
     if len(pkt[TCP].payload) > 9:
         pl = str(pkt[TCP].payload)
         if pl[8] == '\x08':
             try:
                 # Client => Server
-                if pkt[TCP].dport == 80:
+                if pkt[TCP].dport in ports:
                     req.ParseFromString(pl[8:])
                     if not print_keystrokes:
                         parse_request(req)
                     elif req.type == req.KEYBOARD_ACTION_V2:
                         write_keystroke(req)
                 # Server => Client
-                elif pkt[TCP].sport == 80:
+                elif pkt[TCP].sport in ports:
                     res.ParseFromString(pl[8:])
                     if not print_keystrokes:
                         parse_response(res)
@@ -127,4 +127,5 @@ if __name__ == '__main__':
         sniff(offline=args.pcap, prn=pkt_callback, store=0)
     else:
         print "Starting sniffing..."
-        sniff(filter="tcp port 80", prn=pkt_callback, store=0)
+        ports_filter = ' or '.join([str(p) for p in ports])
+        sniff(filter="tcp port %s" % ports_filter, prn=pkt_callback, store=0)
